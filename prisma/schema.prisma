@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model PromoCode {
+  id              String       @id @default(uuid())
+  code            String       @unique
+  discountPercent Int
+  activationLimit Int
+  activationCount Int          @default(0)
+  expiresAt       DateTime
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  activations     Activation[]
+}
+
+model Activation {
+  id          String    @id @default(uuid())
+  email       String
+  createdAt   DateTime  @default(now())
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  promoCodeId String
+
+  @@unique([promoCodeId, email])
+  @@index([promoCodeId])
+}
