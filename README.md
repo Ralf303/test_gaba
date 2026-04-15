@@ -33,6 +33,8 @@ npm install
 Если Docker доступен:
 
 ```bash
+docker --version
+docker info
 docker compose up -d
 ```
 
@@ -43,7 +45,7 @@ docker compose up -d
 Базовое значение:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/promo_codes?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/promo_codes?schema=public"
 PORT=3000
 ```
 
@@ -51,6 +53,18 @@ PORT=3000
 
 ```bash
 npm run prisma:deploy
+```
+
+Если Prisma в локальной среде отвечает `Schema engine error`, можно применить SQL миграцию напрямую:
+
+```bash
+docker exec promo-codes-postgres pg_isready -U postgres -d promo_codes
+```
+
+Windows PowerShell:
+
+```powershell
+Get-Content -Raw prisma\migrations\20260415120000_init\migration.sql | docker exec -i promo-codes-postgres psql -U postgres -d promo_codes
 ```
 
 ### 5. Запустить приложение
